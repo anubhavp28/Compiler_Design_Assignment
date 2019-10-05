@@ -23,7 +23,7 @@ const rule_t* (*buildParsingTable())[TERMINAL_COUNT] {
     memset(pt, 0, sizeof(rule_t*) * NON_TERMINAL_COUNT * TERMINAL_COUNT);
     
     // ----------------------------
-    // Initialising CFG productions
+    // Initialise CFG productions
     // ----------------------------
     
     // S -> CE eof
@@ -77,7 +77,7 @@ const rule_t* (*buildParsingTable())[TERMINAL_COUNT] {
     static const rule_t rule17 = {1, {TOKEN_INPUT}};    
 
     // ------------------------------
-    // Initialising the Parsing Table
+    // Initialise Parsing Table
     // ------------------------------
         
     pt[CFG_NT_S][tokenToIndex(TOKEN_INPUT)] = &rule1;
