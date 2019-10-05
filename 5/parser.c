@@ -149,9 +149,8 @@ bool isTerminal(int v) {
         case '=':
         case TOKEN_EOF:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 
 bool parse() {
