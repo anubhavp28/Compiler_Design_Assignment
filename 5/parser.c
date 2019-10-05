@@ -171,9 +171,8 @@ bool parse() {
         top(&st, &stack_top);
 
         if (stack_top == -1) {
-            if (token.tokenClass != TOKEN_EOF) {
+            if (token.tokenClass != TOKEN_EOF)
                 rejected = true;
-            }
             break;
         }
         
@@ -183,10 +182,9 @@ bool parse() {
                 pop(&st);
                 continue;
             }
-            else {
-                rejected = true;
-                break;
-            }
+            
+            rejected = true;
+            break;
         }
             
         col_idx = tokenToIndex(token.tokenClass);
@@ -197,9 +195,8 @@ bool parse() {
         
         r = pt[stack_top][col_idx];
         pop(&st);
-        for (int i=r->len - 1; i>=0; i--) {
+        for (int i=r->len - 1; i>=0; i--)
             push(&st, r->rule[i]);
-        }
          
     }
 
