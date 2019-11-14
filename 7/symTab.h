@@ -11,14 +11,14 @@ typedef struct {
 } symTabEntry;
 
 class symTab {
+public:
     symTabEntry symbolTable[SYM_SIZE];
     int tableSize;
-public:
     symTab();
     int search(char id[ID_LEN]);
-    int insert(char id[ID_LEN], char type, int size, int disp);
+    int insert(char id[ID_LEN]);
     void printTable();
 };
 
-extern symTab symTable();
+extern symTab symTable;
 #endif

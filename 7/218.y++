@@ -1,0 +1,161 @@
+%{
+#include <stdio.h>
+#include <iostream>
+#include "symTab.h"
+using namespace std;
+int yylex(void);
+void yyerror(char const *s);
+extern int yylineno;
+
+bool FAILURE = false;
+#define YYDEBUG 1
+
+%}
+
+%define parse.error verbose
+
+%token ':'
+%token <varName> ID IC FC '=' NOP "nop" PRINT "print" READ "read" INTTYPE "int" FLOATTYPE "real" WHILE "while" DO "do" IF "if" THEN "then" ELSE "else" STRING
+%type <etype> e;
+%type <vltype> vl;
+%type <tytype> ty;
+%left '|'
+%left '&'
+%left '~'
+%left DEQL '<' '>'
+%left '+' '-' 
+%left '*' '/'
+
+%token UMINUS
+
+%union {
+    struct ETYPE{
+        int varIndex;
+        char typeCode;
+    } etype;
+
+    char varName[100];
+
+    struct VLTYPE {
+        int listSize;
+        int list[100];
+    } vltype;
+
+    struct TYTYPE {
+        char typeCode;
+    } tytype;
+}
+
+%start p
+ 
+%%
+
+p: dl sl
+;
+
+dl: dl d
+ |
+;
+
+d: vl ':' ty {
+    for (int i=0; i<$1.listSize; i++) {
+        symTable.symbolTable[$1.list[i]].type = $3.typeCode; 
+    }
+}
+;
+
+vl: vl ID {  
+     $$.listSize = $1.listSize + 1;
+     for (int i=0; i<$1.listSize; i++) {
+         $$.list[i] = $1.list[i];
+     }
+     if (symTable.search($2) != -1) {
+        cout<<"ERROR: variable "<<$2<<" redeclared at line no "<< yylineno <<endl;
+        FAILURE = true;
+     }
+     $$.list[$1.listSize] = symTable.insert($2);; 
+ }
+ | ID { $$.listSize = 1; 
+    if (symTable.search($1) != -1) {
+        cout<<"ERROR: variable "<<$1<<" redeclared at line no "<< yylineno <<endl;
+        FAILURE = true;
+    }
+    $$.list[0] = symTable.insert($1);
+ }
+;
+
+ty: "int" { $$.typeCode = 'i'; }
+ | "real" { $$.typeCode = 'r'; }
+;
+
+sl: s sl
+ | s
+;
+
+s: as
+ | is
+ | ls
+ | ios
+ | "nop"
+;
+
+as: ID '=' e
+;
+
+is: "if" be "then" sl "else" sl ';'
+;
+
+ls: "while" be "do" sl ';'
+;
+
+ios: "print" pe
+ | "read" ID
+;
+
+pe: e
+ | STRING
+;
+
+be: be '|' be
+ | be '&' be
+ | '~' be
+ | '(' be ')'
+ | re
+;
+
+re: e DEQL e
+ | e '<' e
+ | e '>' e
+;
+
+e: e '+' e
+ | e '-' e
+ | e '*' e
+ | e '/' e
+ | '-' e %prec UMINUS
+ | '(' e ')'
+ | ID { 
+    if (symTable.search($1) == -1) {
+        cout<<"ERROR: variable "<<$1<<" not declared at line no "<<yylineno<<endl;
+        $$.varIndex = symTable.insert($1);
+        symTable.symbolTable[$$.varIndex].type = 'U'; // undefined type
+        $$.typeCode = 'U';
+        FAILURE = true;
+    }
+    else {
+        $$.varIndex = symTable.search($1);
+        $$.typeCode = symTable.symbolTable[$$.varIndex].type;
+    }  
+ }
+ | IC
+ | FC
+;
+
+%%
+int main() {
+    if (yyparse() == 0 and FAILURE == false) cout<<"Accept\n";
+    else cout<<"Reject\n";
+    symTable.printTable();
+}
+
+void yyerror(char const *s) {cerr << s <<" "<<yylineno<<endl;}

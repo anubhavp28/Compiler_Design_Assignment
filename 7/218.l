@@ -38,7 +38,7 @@ comment (\/\/).*\n
 {nop} { return NOP; }
 {print} { return PRINT; }
 {read} { return READ; }
-{identifier} { return ID; }
+{identifier} { strcpy(yylval.varName, yytext); return ID; }
 {string} { return STRING; }
 {integer} { return IC; }
 {float} { return FC; }

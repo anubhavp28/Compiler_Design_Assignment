@@ -97,7 +97,8 @@ e: e '+' e
 
 %%
 int main() {
-    return yyparse();
+    if (yyparse() == 0) cout<<"Accept\n";
+    else cout<<"Reject\n";
 }
 
 void yyerror(char const *s) {cerr << s <<" "<<yylineno<<endl;}
