@@ -23,7 +23,7 @@ const rule_t* (*buildParsingTable())[TERMINAL_COUNT] {
     memset(pt, 0, sizeof(rule_t*) * NON_TERMINAL_COUNT * TERMINAL_COUNT);
     
     // ----------------------------
-    // Initialising CFG productions
+    // Initialise CFG productions
     // ----------------------------
     
     // S -> CE eof
@@ -77,7 +77,7 @@ const rule_t* (*buildParsingTable())[TERMINAL_COUNT] {
     static const rule_t rule17 = {1, {TOKEN_INPUT}};    
 
     // ------------------------------
-    // Initialising the Parsing Table
+    // Initialise Parsing Table
     // ------------------------------
         
     pt[CFG_NT_S][tokenToIndex(TOKEN_INPUT)] = &rule1;
@@ -149,9 +149,8 @@ bool isTerminal(int v) {
         case '=':
         case TOKEN_EOF:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 
 bool parse() {
@@ -171,9 +170,8 @@ bool parse() {
         top(&st, &stack_top);
 
         if (stack_top == -1) {
-            if (token.tokenClass != TOKEN_EOF) {
+            if (token.tokenClass != TOKEN_EOF)
                 rejected = true;
-            }
             break;
         }
         
@@ -183,10 +181,9 @@ bool parse() {
                 pop(&st);
                 continue;
             }
-            else {
-                rejected = true;
-                break;
-            }
+            
+            rejected = true;
+            break;
         }
             
         col_idx = tokenToIndex(token.tokenClass);
@@ -197,9 +194,8 @@ bool parse() {
         
         r = pt[stack_top][col_idx];
         pop(&st);
-        for (int i=r->len - 1; i>=0; i--) {
+        for (int i=r->len - 1; i>=0; i--)
             push(&st, r->rule[i]);
-        }
          
     }
 
