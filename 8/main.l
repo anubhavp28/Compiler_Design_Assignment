@@ -38,14 +38,12 @@ int H() {
 
 int S() {
     if (currentToken != TOKEN_FC) {
-        //printf("expected fc\n");
         return PARSER_ERROR;
     }
     
     if (E() == PARSER_ERROR) return PARSER_ERROR;
     
     if (currentToken != '\n') {
-        //printf("expected \\n\n");
         return PARSER_ERROR;
     }
     
@@ -54,7 +52,6 @@ int S() {
 
 int E() {
     if (currentToken != TOKEN_FC) {
-        //printf("expected fc\n");
         return PARSER_ERROR;
     }
     
