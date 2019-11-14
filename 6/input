@@ -1,0 +1,10 @@
+// This program computes factorial
+n fact i : int
+read n
+i = 1
+fact = 1
+while i < n | i == n do
+fact = fact * i
+i = i + 1
+; // Note the ;
+print fact
